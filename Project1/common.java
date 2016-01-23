@@ -1,10 +1,10 @@
 class Rule {
-	int srcFur;			// if语句后家具的编号
-	int srcVar;			// 第一个家具执行的action编号
-	String condition;   // 第一个家具满足的条件
+	int srcFur;				// if语句后家具的编号
+	String srcVar;			// 第一个家具某个属性名称
+	String condition;		// 第一个家具满足的条件
 	
-	int dstFur;			// that语句后的家具编号
-	int dstEvent;		// 第二个家具执行的action编号
+	int dstFur;				// that语句后的家具编号
+	String dstEvent;		// 第二个家具执行的action名称
 }
 
 class Spec {
@@ -13,27 +13,23 @@ class Spec {
 
 class State
 {
-	boolean init;			// 是否有初始化值
-	String initVal;			// 初始化值
 	String StateName;		// State名称
 };
 
 class Variable
 {
 	String varName;		// 变量名称
-	int varType;		// 变量类型
+	int varType;		// 变量类型，(0为int型，1为enum型，2为boolean型)
 	String rage;		// 变量范围
 
-	boolean init;		// 是否初始化
-	String initVal;		// 初始化值
-
-	String curState;	// 当前取值
+	String initVal;		// 初始化值，若没有初始化值为空字符串
+	String curVal;		// 当前取值
 }
 
 class TransVar			// 在action中改变variable的值
 {
-	int val;
-	String valRst;
+	String val;			// 要改变的家具变量在variArr中的名称
+	String valRst;		// 改变后的值
 }
 
 class Action
@@ -47,12 +43,13 @@ class Action
 class Furniture
 {
 	String furname;					// 家具名称
-	State curState;					// 记录家具当前状态
+	String curState;				// 家具当前状态编号
+	string initState;				// 家具初始状态，如没有为空字符串
 
-	State[] StateVec;			// 所有的状态列表
-	Variable[] variVec;		// 所有的内部变量
-	Action[] actionVec;		// 可以执行的action列表
-	Rule[] internRules;		// 内部规则
+	State[] StateArr;				// 所有的状态列表
+	Variable[] variArr;				// 所有的内部变量
+	Action[] actionArr;				// 可以执行的action列表
+	Rule[] internRules;				// 内部规则
 }
 
 public class common {
@@ -60,9 +57,11 @@ public class common {
 	private static Rule[] R_Array;
 	private static Spec[] S_Array;
 	private static String JsonName;
+
 	static {
 		System.loadLibrary("Check");
 	}
+
 	public static void main(String[] args) {
 		new common().Check(R_Array,S_Array,JsonName);
 	}	
