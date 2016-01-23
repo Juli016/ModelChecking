@@ -1,0 +1,235 @@
+{
+    "Specs": {
+        "Devices": [
+            {
+                "Type": "mail",
+               
+                    "InternalVariables": [
+                        {
+                            "Name":"send_flag",
+                            "Type":"bool",
+                            "Default":false,
+                            "Access": true
+                        },
+                         {
+                            "Name":"receive_flag",
+                            "Type":"bool",
+                            "Default":false,
+                            "Access": true
+                        },
+                         {
+                            "Name":"send_content",
+                            "Type":"int",
+                            "Default":0,
+                            "Access": true
+                        },
+                         {
+                            "Name":"receive_content",
+                            "Type":"int",
+                            "Default":0,
+                            "Access": true
+                        }
+                    ],
+
+                "Sensors": [
+                ],
+                 "Actuator": [
+                    {
+                        "Name": "send",
+                        "Arguments": [
+                            {
+                                "Name":"sentmail",
+                                "Type":"int"
+                            }
+                         ],
+                        "Assignments": [
+                        ],
+                         "UR":true,
+                         "targetWorkingMode":"S1"
+                    },
+                    {
+                        "Name": "receive",
+                        "Arguments": [
+                            {
+                                "Name":"recvmail",
+                                "Type":"int"
+                            }
+                         ],
+                        "Assignments": [
+                        ],
+                        "UR":true,
+                         "targetWorkingMode":"S1"
+                    }
+                ],
+                "WorkingMode": [
+                    {
+                        "Name": "S1",
+                    }
+                ],
+                "init":"S1",
+                "Transitions": [
+                    {
+                        "Type": "mail.Command",
+                        "Name": "t1", /* name of transition between two states above, given by manufacturer */
+                        "Trigger": "mail.send(sentmail)", /* can be an expression if an internal trigger */
+                        "StartMode": "S1",
+                        "EndMode": "S1",
+                        "Assignments":[
+                            {
+                                "Item":"send_flag",
+                                "Value":"true"
+                            }
+                        ]
+                    },
+                     {
+                        "Type": "mail.Command",
+                        "Name": "t2", /* name of transition between two states above, given by manufacturer */
+                        "Trigger": "mail.receive(recvmail)", /* can be an expression if an internal trigger */
+                        "StartMode": "S1",
+                        "EndMode": "S1",
+                        "Assignments":[
+                            {
+                                "Item":"receive_flag",
+                                "Value":"true"
+                            }
+                        ]
+                    }
+                ],
+                "Effects": [
+                    {
+                        "Src": "setpoint",
+                        "SrcValue": "value",
+                        "Dst": "temperature",
+                        "DstValue": "value"
+                    },
+                    {
+                        "Src": "mode",
+                        "SrcValue": "Smartthings_Thermostat_Mode.cool",
+                        "Dst": "temperature_direction",
+                        "DstValue": "Temperature_Direction.down"
+                    }
+                ],
+                "Constraints": [
+                    "0 <= brightness and brightness <= 100",
+                    "0 <= brightness and brightness <= 101"
+                ],
+                "InternalRules": [
+                ]
+            },
+            {
+                "Type": "gate",
+               
+                    "InternalVariables": [
+                        
+                    ],
+                "Actuator": [
+                    {
+                        "Name": "open",
+                        "Arguments": [ ],
+                        "Assignments": [
+                        ],
+                         "targetWorkingMode":"Open",
+                         "UR":false
+                    },
+                    {
+                        "Name": "close",
+                        "Arguments": [
+                        ],
+                        "Assignments": [
+                        ],
+                         "targetWorkingMode":"Closed",
+                          "UR":false
+                    }
+                ],
+
+                "Sensors": [
+                    
+                ],
+                "WorkingMode": [
+                    {
+                        "Name": "Closed",
+                    },
+                    {
+                        "Name": "Open",
+                    }
+                ],
+                "init":"Closed",
+                "Transitions": [
+                {
+                        "Type": "gate.Command",
+                        "Name": "t1", /* name of transition between two states above, given by manufacturer */
+                        "Trigger": "gate.open()", /* can be an expression if an internal trigger */
+                        "StartMode": "Closed",
+                        "EndMode": "Open",
+                        "Assignments":[
+                           
+                        ]
+                    },
+                    {
+                        "Type": "gate.Command",
+                        "Name": "t2",
+                        "Trigger": "gate.close()",
+                        "StartMode": "Open",
+                        "EndMode": "Closed",
+                         "Assignments":[
+                           
+                        ]
+                    }
+                ],
+                "Effects": [
+                    {
+                        "Src": "setpoint",
+                        "SrcValue": "value",
+                        "Dst": "temperature",
+                        "DstValue": "value"
+                    },
+                    {
+                        "Src": "mode",
+                        "SrcValue": "Smartthings_Thermostat_Mode.cool",
+                        "Dst": "temperature_direction",
+                        "DstValue": "Temperature_Direction.down"
+                    }
+                ],
+                "Constraints": [
+                    "0 <= brightness and brightness <= 100",
+                    "0 <= brightness and brightness <= 101"
+                ],
+                "InternalRules": [
+                ]
+            }
+        ],
+        "ExternalRules":[
+            {
+                "Device1":"mail",
+                "Trigger":"receive_flag==true",
+                "Device2":"mail",
+                "Actuator":"send",
+                "Para":"(recvmail)",
+                "Assignments":[
+                {
+                    "Item":"receive_flag",
+                    "Value":"false"
+                }
+                ]
+            },
+            {
+                "Device1":"mail",
+                "Trigger":"((send_flag==true) && (sentmail==10))",
+                "Device2":"gate",
+                "Actuator":"open",
+                "Para":"()",
+                "Assignments":[
+                {
+                    "Item":"send_flag",
+                    "Value":"false"
+                }
+                ]
+            }
+        ],
+        "Types": 
+             [
+               
+            ]
+        
+    }
+}

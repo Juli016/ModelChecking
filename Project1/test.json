@@ -1,0 +1,293 @@
+{
+    "Specs": {
+        "Devices": [
+            {
+                "Type": "s_detector",
+               
+                    "InternalVariables": [
+                        {
+                           "Name":"s_alarm",
+                            "Type":"bool",
+                            "Default":false,
+                            "Access": true
+                        }
+                    ],
+
+                "Sensors": [
+                    
+                         {
+                            "Name":"s_level",
+                            "Type":"int",
+                            "Unit": "Mm",
+                            "Env": "smoke_level" 
+                    }
+                ],
+                "WorkingMode": [
+                    {
+                        "Name": "S1"
+                    },
+                    {
+                        "Name": "S2"
+                    }
+                ],
+                "init":"S1",
+                "Transitions": [
+                    {
+                        "Type": "s_detector.Command",
+                        "Name": "t1", /* name of transition between two states above, given by manufacturer */
+                        "Trigger": "", /* can be an expression if an internal trigger */
+                        "StartMode": "S1",
+                        "EndMode": "S2",
+                        "Assignments":[
+                            {
+                                "Item":"s_level",
+                                "Value":"[0,30]"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "s_detector.Command",
+                        "Name": "t2",
+                        "Trigger": "s_level<=20",
+                        "StartMode": "S2",
+                        "EndMode": "S1",
+                         "Assignments":[
+                            {
+                                "Item":"s_alarm",
+                                "Value":"false"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "s_detector.Command",
+                        "Name": "t3",
+                        "Trigger": "s_level>20",
+                        "StartMode": "S2",
+                        "EndMode": "S1",
+                         "Assignments":[
+                            {
+                                "Item":"s_alarm",
+                                "Value":"true"
+                            }
+                        ]
+                    }
+                ],
+                "Effects": [
+                    {
+                        "Src": "setpoint",
+                        "SrcValue": "value",
+                        "Dst": "temperature",
+                        "DstValue": "value"
+                    },
+                    {
+                        "Src": "mode",
+                        "SrcValue": "Smartthings_Thermostat_Mode.cool",
+                        "Dst": "temperature_direction",
+                        "DstValue": "Temperature_Direction.down"
+                    }
+                ],
+                "Constraints": [
+                    "0 <= brightness and brightness <= 100",
+                    "0 <= brightness and brightness <= 101"
+                ],
+                "InternalRules": [
+                ]
+            },
+            {
+                "Type": "t_detector",
+               
+                    "InternalVariables": [
+                        
+                        {
+                           "Name":"t_alarm",
+                            "Type":"bool",
+                            "Default":false,
+                            "Access": true
+                        }
+                    ],
+
+                "Sensors": [
+                    
+                         {
+                            "Name":"t_level",
+                            "Type":"int",
+                            "Unit": "Mm",
+                            "Env": "smoke_level" 
+                    }
+                ],
+                "WorkingMode": [
+                    {
+                        "Name": "S1",
+                    },
+                    {
+                        "Name": "S2",
+                    }
+                ],
+                "init":"S1",
+                "Transitions": [
+                    {
+                        "Type": "t_detector.Command",
+                        "Name": "t1", /* name of transition between two states above, given by manufacturer */
+                        "Trigger": "", /* can be an expression if an internal trigger */
+                        "StartMode": "S1",
+                        "EndMode": "S2",
+                        "Assignments":[
+                            {
+                                "Item":"t_level",
+                                "Value":"[-10,30]"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "t_detector.Command",
+                        "Name": "t2",
+                        "Trigger": "t_level<18",
+                        "StartMode": "S2",
+                        "EndMode": "S1",
+                         "Assignments":[
+                            {
+                                "Item":"t_alarm",
+                                "Value":"true"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "t_detector.Command",
+                        "Name": "t3",
+                        "Trigger": "t_level>=18",
+                        "StartMode": "S2",
+                        "EndMode": "S1",
+                         "Assignments":[
+                            {
+                                "Item":"t_alarm",
+                                "Value":"false"
+                            }
+                        ]
+                    }
+                ],
+                "Effects": [
+                    {
+                        "Src": "setpoint",
+                        "SrcValue": "value",
+                        "Dst": "temperature",
+                        "DstValue": "value"
+                    },
+                    {
+                        "Src": "mode",
+                        "SrcValue": "Smartthings_Thermostat_Mode.cool",
+                        "Dst": "temperature_direction",
+                        "DstValue": "Temperature_Direction.down"
+                    }
+                ],
+                "Constraints": [
+                    "0 <= brightness and brightness <= 100",
+                    "0 <= brightness and brightness <= 101"
+                ],
+                "InternalRules": [
+                ]
+            },
+            {
+                "Type": "fan",
+               
+                    "InternalVariables": [
+                        
+                    ],
+                "Actuator": [
+                    {
+                        "Name": "fan_open",
+                        "Arguments": [ ],
+                        "Assignments": [
+                        ],
+                         "targetWorkingMode":"Open",
+                         "UR":false
+                    },
+                    {
+                        "Name": "fan_close",
+                        "Arguments": [
+                        ],
+                        "Assignments": [
+                        ],
+                         "targetWorkingMode":"Closed",
+                          "UR":false
+                    }
+                ],
+
+                "Sensors": [
+                    
+                ],
+                "WorkingMode": [
+                    {
+                        "Name": "Closed",
+                    },
+                    {
+                        "Name": "Open",
+                    }
+                ],
+                "init":"Closed",
+                "Transitions": [
+                {
+                        "Type": "fan.Command",
+                        "Name": "t1", /* name of transition between two states above, given by manufacturer */
+                        "Trigger": "fan.fan_open()", /* can be an expression if an internal trigger */
+                        "StartMode": "Closed",
+                        "EndMode": "Open",
+                        "Assignments":[
+                           
+                        ]
+                    },
+                    {
+                        "Type": "fan.Command",
+                        "Name": "t2",
+                        "Trigger": "fan.fan_close()",
+                        "StartMode": "Open",
+                        "EndMode": "Closed",
+                         "Assignments":[
+                           
+                        ]
+                    }
+                ],
+                "Effects": [
+                    {
+                        "Src": "setpoint",
+                        "SrcValue": "value",
+                        "Dst": "temperature",
+                        "DstValue": "value"
+                    },
+                    {
+                        "Src": "mode",
+                        "SrcValue": "Smartthings_Thermostat_Mode.cool",
+                        "Dst": "temperature_direction",
+                        "DstValue": "Temperature_Direction.down"
+                    }
+                ],
+                "Constraints": [
+                    "0 <= brightness and brightness <= 100",
+                    "0 <= brightness and brightness <= 101"
+                ],
+                "InternalRules": [
+                ]
+            }
+        ],
+        "ExternalRules":[
+            {
+                "Device1":"s_detector",
+                "Trigger":"s_alarm==true",
+                "Device2":"fan",
+                "Actuator":"fan_open",
+                "Para":"()"
+            },
+            {
+                "Device1":"t_detector",
+                "Trigger":"t_alarm==true",
+                "Device2":"fan",
+                "Actuator":"fan_close",
+                "Para":"()"
+            }
+        ],
+        "Types": 
+             [
+               
+            ]
+        
+    }
+}
