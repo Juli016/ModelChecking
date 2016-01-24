@@ -1,10 +1,12 @@
+package modelChecking;
+
 class Rule {
 	int srcFur;				// if语句后家具的编号
 	String srcVar;			// 第一个家具某个属性名称
 	String condition;		// 第一个家具满足的条件
 	
 	int dstFur;				// that语句后的家具编号
-	String dstEvent;		// 第二个家具执行的action名称
+	String dstAction;		// 第二个家具执行的action名称
 }
 
 class Spec {
@@ -35,7 +37,7 @@ class TransVar			// 在action中改变variable的值
 class Action
 {
 	String actionName;			// action名称 
-	String startState;			// 起始的State
+	String[] startState;		// 起始的State
 	String endState;			// 结束的State
 	TransVar[] trans;			// 执行的transitions
 }
@@ -44,7 +46,7 @@ class Furniture
 {
 	String furname;					// 家具名称
 	String curState;				// 家具当前状态编号
-	string initState;				// 家具初始状态，如没有为空字符串
+	String initState;				// 家具初始状态，如没有为空字符串
 
 	State[] StateArr;				// 所有的状态列表
 	Variable[] variArr;				// 所有的内部变量
@@ -53,7 +55,7 @@ class Furniture
 }
 
 public class common {
-	public　native　boolean Check(Rule[] R_Array,Spec[] S_Array,String JsonName);
+	public native　boolean Check(Rule[] R_Array,Spec[] S_Array,String JsonName);
 	private static Rule[] R_Array;
 	private static Spec[] S_Array;
 	private static String JsonName;
@@ -66,3 +68,4 @@ public class common {
 		new common().Check(R_Array,S_Array,JsonName);
 	}	
 }
+
