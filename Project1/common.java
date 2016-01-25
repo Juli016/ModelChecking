@@ -13,11 +13,6 @@ class Spec {
 	String spec;
 }
 
-class State
-{
-	String StateName;		// State名称
-};
-
 class Variable
 {
 	String varName;		// 变量名称
@@ -48,24 +43,23 @@ class Furniture
 	String curState;				// 家具当前状态编号
 	String initState;				// 家具初始状态，如没有为空字符串
 
-	State[] StateArr;				// 所有的状态列表
+	String[] StateArr;				// 所有的状态列表
 	Variable[] variArr;				// 所有的内部变量
 	Action[] actionArr;				// 可以执行的action列表
 	Rule[] internRules;				// 内部规则
 }
 
-public class common {
-	public native　boolean Check(Rule[] R_Array,Spec[] S_Array,String JsonName);
+public class Common {
+	public native boolean Check(Rule[] R_Array, Spec[] S_Array, Furniture[] F_Array);
 	private static Rule[] R_Array;
 	private static Spec[] S_Array;
-	private static String JsonName;
+	private static Furniture[] F_Array;
 
 	static {
 		System.loadLibrary("Check");
 	}
 
 	public static void main(String[] args) {
-		new common().Check(R_Array,S_Array,JsonName);
+		new Common().Check(R_Array, S_Array, F_Array);
 	}	
 }
-
